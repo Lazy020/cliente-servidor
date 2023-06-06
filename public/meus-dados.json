@@ -1,0 +1,19 @@
+[
+ {
+    "nome": "Davi",
+    "data-nascimento": [2001,11,20],
+    "usa-oculos": "true"
+ },
+
+ {
+    "nome": "Zuka",
+    "data-nascimento": [2000,7,11],
+    "usa-oculos": "false"
+ },
+
+ {
+    "nome": "Davi",
+    "data-nascimento": [2007,3,27],
+    "usa-oculos": "true"
+ }
+]
