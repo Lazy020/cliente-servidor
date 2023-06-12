@@ -1,35 +1,31 @@
-const express = require("express")
-const fs = require("fs")
+const express = require ("express")
+const fs = require ("fs")
 const app = express()
 
 app.use(express.static(__dirname + '/public'))
 
-
 app.use("/create", (req, res) => {
-    const {file, text} = req.query
-    fs.writeFileSync(file, text)
-    //res.get(file, text)
-    //"http://localhost:3000/create?file=meus-dados.json&text=Hello%20World
-    res.send(new Date()) // criado um arquivo tal
-
+  const { file, text } = req.query
+  fs.writeFileSync(file, text)
+  res.send(text)
 })
 
 app.use("/read", (req, res) => {
-    const {file} = req.query
-    fs.readFileSync(file, text)
-    res.send
-    //fs.readFileSync
+  const { file } = req.query
+  const filecontent = fs.readFileSync(file).toString()
+  res.send(filecontent)
 })
 
-app.use("/update", (req, res) => {
-    const {file, text} = req.query
-    //fs.appendFileSync
+app.use("/delete", (req, res) => {
+  const { file } = req.query
+  fs.rmSync(file)
+  res.send("File deleted")
 })
 
-app.use("/delete", (req, res) =>{
-    const {file} = req.query
-    //fs.rmSync
+app.use("/patch", (req, res) => {
+  const { file, text } = req.query
+  fs.rmSync(file, text)
+  res.send(text)
 })
 
-app.listen(3000, () => console.log("Servidor rodando!"))
-
+app.listen(3000, () => console.log("Servidor rodando na porta 3000."))
