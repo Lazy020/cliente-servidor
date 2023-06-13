@@ -1,34 +1,37 @@
-const express = require("express")
-const fs = require("fs")
-const { getDatabaseInstance } = require("./database")
+const express = require("express");
+const { getDatabaseInstance } = require("./database");
 
-const app = express()
+const app = express();
 
-app.use(express.static(__dirname + '/public'))
+app.use(express.static(__dirname + '/../public'));
 
-app.use("/create", async (req, res) => {
-  const { title, source, description, thumb } = req.query
-  const db = await getDatabaseInstance()
-  const result = await db.run(`
-    INSERT INTO movies(title, source, description, thumb) VALUES(?, ?, ?, ?)`,
+app.use("/write", async (req, res) => {
+  const { title, source, description, thumb } = req.query;
+  const db = await getDatabaseInstance();
+  const result = await db.run(
+    `INSERT INTO films(title, source, description, thumb) VALUES (?, ?, ?, ?)`,
     [title, source, description, thumb]
-  )
-  res.send(result)
-})
+  );
+  res.send(result);
+});
 
-app.use("/read", (req, res) => {
-  const { file } = req.query
-  // fs.readFileSync
-})
+app.use("/read", async (req, res) => {
+  const db = await getDatabaseInstance();
+  const result = await db.all(
+    `SELECT * FROM films`
+  );
+  res.send(result);
+});
 
-app.use("/update", (req, res) => {
-  const { file, text } = req.query
-  // fs.appendFileSync
-})
+app.use("/delete", async (req, res) => {
+  const { id } = req.query;
+  const db = await getDatabaseInstance();
+  await db.run(
+    `DELETE FROM films WHERE id = ?`,
+    [id]
+  );
+  res.send(`Filme deletado.`);
+});
 
-app.use("/delete", (req, res) => {
-  const { file } = req.query
-  // fs.rmSync
-})
-
-app.listen(3000, () => console.log("Servidor rodando!"))
+const port = 3000;
+app.listen(port, () => console.log(`Servidor rodando de boa na porta: ${port}.`));
