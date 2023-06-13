@@ -16,15 +16,21 @@ app.use("/read", (req, res) => {
   res.send(filecontent)
 })
 
+app.use("/update", (req, res) => {
+  const { file, text } = req.query
+  fs.writeFileSync(file, text)
+  res.send(text)
+})
+
 app.use("/delete", (req, res) => {
   const { file } = req.query
   fs.rmSync(file)
   res.send("File deleted")
 })
 
-app.use("/patch", (req, res) => {
+app.use("/append", (req, res) => {
   const { file, text } = req.query
-  fs.rmSync(file, text)
+  fs.appendFileSync(file, '\n'+text)
   res.send(text)
 })
 
