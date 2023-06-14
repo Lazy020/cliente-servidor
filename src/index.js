@@ -21,7 +21,7 @@ app.use("/create", async (req, res) => {
 app.use("/read", async (req, res) => {
   const { id } = req.query
   const db = await getDatabaseInstance()
-  const result = await db.all(`SELECT * FROM movies WHERE id = ?` [id])
+  const result = await db.all(`SELECT * FROM movies WHERE id = ?`, [id])
   res.send(result)
 })
 
@@ -43,3 +43,7 @@ app.use("/delete", async (req, res) => {
 
 const port = 3000
 app.listen(port, () => console.log(`Servidor rodando de boa na porta: ${port}.`))
+
+
+
+//grata pela orientação 
