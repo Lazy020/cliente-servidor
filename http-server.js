@@ -4,6 +4,12 @@ const app = express()
 
 app.use(express.static(__dirname + '/public'))
 
+// CRUD
+// Create
+// Read
+// Update
+// Delete
+
 app.use("/create", (req, res) => {
   const { file, text } = req.query
   fs.writeFileSync(file, text)
@@ -28,10 +34,5 @@ app.use("/delete", (req, res) => {
   res.send("File deleted")
 })
 
-app.use("/append", (req, res) => {
-  const { file, text } = req.query
-  fs.appendFileSync(file, '\n'+text)
-  res.send(text)
-})
 
 app.listen(3000, () => console.log("Servidor rodando na porta 3000."))
