@@ -41,8 +41,8 @@ app.put("/movies", async (req, res) => {
 
 app.patch("/movies"), async (req, res) => {
   const { id } = req.query
-  const { title, source, description, thumb } = req.body
   const db = await getDatabaseInstance()
+  
 
 }
 
