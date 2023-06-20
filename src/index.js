@@ -1,49 +1,59 @@
 const express = require("express")
+const fs = require("fs")
 const { getDatabaseInstance } = require("./database")
 
 const app = express()
 
 app.use(express.static(__dirname + '/../public'))
+app.use(express.json())
 
-// CRUD
-// Create
-// Read
-// Update
-// Delete
-
-app.use("/create", async (req, res) => {
-  const { title, source, description, thumb } = req.query
+app.post("/movies", async (req, res) => {
+  const { title, source, description, thumb } = req.body
   const db = await getDatabaseInstance()
-  const result = await db.run(`INSERT INTO movies(title, source, description, thumb) VALUES (?, ?, ?, ?)`, [title, source, description, thumb])
-  res.send(result)
+  const result = await db.run(`INSERT INTO movies(title, source, description, thumb) VALUES(?, ?, ?, ?)`, [title, source, description, thumb])
+  res.json(result)
 })
 
-app.use("/read", async (req, res) => {
+app.get("/movies", async (req, res) => {
   const { id } = req.query
   const db = await getDatabaseInstance()
-  const result = await db.all(`SELECT * FROM movies WHERE id = ?`, [id])
-  res.send(result)
+  if (id) {
+    const result = await db.get(`SELECT * FROM movies WHERE id=?`, id)
+    res.json(result)
+    return
+  }
+  const result = await db.all(`SELECT * FROM movies`)
+  res.json(result)
 })
 
-app.use("/update", async (req, res) => {
-  const { id, title, source, description, thumb } = req.query
+app.put("/movies", async (req, res) => {
+  const { id } = req.query
+  const { title, source, description, thumb } = req.body
   const db = await getDatabaseInstance()
-  const result = await db.run(`UPDATE movies SET title=?, source=?, description=?, thumb=? WHERE id=?`, [title, source, description, thumb, id])
-  res.send(result.changes ? "modificado" : "não modificado")
+  const result = await db.run(
+    `UPDATE movies SET title=?, source=?, description=?, thumb=? WHERE id=?`,
+    title, source, description, thumb, id
+  )
+  res.json(result)
 })
 
+// ??????? PATCH
 
-app.use("/delete", async (req, res) => {
+app.patch("/movies"), async (req, res) => {
+  const { id } = req.query
+  const { title, source, description, thumb } = req.body
+  const db = await getDatabaseInstance()
+
+}
+
+app.delete("/movies", async (req, res) => {
   const { id } = req.query
   const db = await getDatabaseInstance()
-  const result = await db.run(`DELETE FROM movies WHERE id = ?`, [id])
-  res.send(result.changes ? "deletado" : "não deletado")
+  const result = await db.run(`DELETE FROM movies WHERE id=?`, id)
+  res.json(result)
 })
 
-
-const port = 3000
-app.listen(port, () => console.log(`Servidor rodando de boa na porta: ${port}.`))
+app.listen(3000, () => console.log("Servidor rodando!"))
 
 
 
-//grata pela orientação 
