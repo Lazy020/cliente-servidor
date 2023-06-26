@@ -43,13 +43,14 @@ app.put("/movies", async (req, res) => {
 app.patch("/movies", async (req, res) => {
   const { id } = req.query
   const db = await getDatabaseInstance()
-
   const updates = Object.entries(req.body).map(([key, value]) => `${key} = COALESCE(?, ${key})`).join(", ")
   const values = Object.values(req.body)
   const result = await db.run(
     `UPDATE movies SET ${updates} WHERE id = ?`,
     [...values, id]
   )
+
+//  `UPDATE movies SET title = ?, source = ?, WHERE id = ?`
 
   res.json(result)
   return 
