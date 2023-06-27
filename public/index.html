@@ -138,21 +138,13 @@
     domMovieList.addEventListener("click", async ev => {
       if (ev.target.classList.contains("delete-button")) {
         const response = await fetch(`/movies?id=${ev.target.dataset.id}`, { method: "DELETE"})
-        const movies = await response.json()        
+       // const movies = await response.json()        
         listarTodosOsFilmes()
         return
       }
     })
     
-    domMovieList.addEventListener("click", async ev => {
-      if (ev.target.classList.contains("alter-button")) {
-        const response = await fetch(`/movies?id=${ev.target.dataset.id}`, { method: "PUT"})
-        const movies = await response.json()        
-        listarTodosOsFilmes()
-        return
-      }
-    })
-
+    
   </script>
 </body>
 
