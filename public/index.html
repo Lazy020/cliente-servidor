@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>Teste</title>
+  <title>Document</title>
   <style>
     ul, li {
       list-style: none;
@@ -69,7 +69,7 @@
   <script>
     const domMovieList = document.querySelector("ul.movie-list")
     const domFormAlterar = document.querySelector("form.form-alterar") 
-    const deleteButtons = document.querySelectorAll(".delete-button")
+    const deleteButtons = domMovieList.querySelectorAll(".delete-button")
    
     // ---✀------------------------------------------------------------------
 
@@ -94,8 +94,8 @@
                 <strong>description:</strong> ${movie.description}
               </li>
               <li>
-                <button class="delete-button">excluir</button>
-                <button>alterar</button>
+                <button class ="delete-button" data-id="${movie.id}">excluir</button>
+                <button class ="alter-button" data-id="${movie.id}">alterar</button>
               </li>
             </ul>
           </li>
@@ -108,19 +108,19 @@
     listarTodosOsFilmes()
 
     // ---✀------------------------------------------------------------------
-
+    
     domFormAlterar.addEventListener("submit", async ev => {
       ev.preventDefault()
       ev.stopPropagation()
       ev.stopImmediatePropagation()
-
+      
       const body = JSON.stringify({
         title: domFormAlterar.title.value,
         source: domFormAlterar.source.value,
         description: domFormAlterar.description.value,
         thumb: domFormAlterar.thumb.value,
       })
-
+      
       const response = await fetch("/movies", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -129,11 +129,30 @@
       
       const result = await response.json()
       domFormAlterar.reset()
-
+      
       listarTodosOsFilmes()
     })
     
-     
+    // ---✀------------------------------------------------------------------
+
+    domMovieList.addEventListener("click", async ev => {
+      if (ev.target.classList.contains("delete-button")) {
+        const response = await fetch(`/movies?id=${ev.target.dataset.id}`, { method: "DELETE"})
+        const movies = await response.json()        
+        listarTodosOsFilmes()
+        return
+      }
+    })
+    
+    domMovieList.addEventListener("click", async ev => {
+      if (ev.target.classList.contains("alter-button")) {
+        const response = await fetch(`/movies?id=${ev.target.dataset.id}`, { method: "PUT"})
+        const movies = await response.json()        
+        listarTodosOsFilmes()
+        return
+      }
+    })
+
   </script>
 </body>
 
