@@ -1,14 +1,46 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
- 
-  <title>Server</title>
+  <title>Teste</title>
+  <style>
+    ul, li {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    ul.movie-list {
+      display: flex;
+      flex-wrap: wrap;
+    }
+
+    ul.movie-list > li {
+      border: 1px solid #000000;
+      margin: 1rem;
+      cursor: pointer;
+    }
+    
+    ul.movie-list > li > div {
+      background-color: #000000;
+      padding: .25rem .5rem;
+      color: #FFFFFF;
+    }
+
+    ul.movie-list > li > ul {
+      padding: .5rem;
+      transition: .3s;
+    }
+
+    ul.movie-list > li > ul:hover {
+      background-color: #00000033;
+    }
+    </style>
 </head>
+
 <body>
-  <form>
+  <form class="form-alterar">
     <div>
       <label for="title">title</label>
       <input name="title" id="title">
@@ -35,28 +67,34 @@
   </ul>
 
   <script>
-    const domMovies = document.querySelector("ul.movie-list")
+    const domMovieList = document.querySelector("ul.movie-list")
+    const domFormAlterar = document.querySelector("form.form-alterar")
 
-    async function listarTodosOsFilmes(){
+    // ---✀------------------------------------------------------------------
+
+    async function listarTodosOsFilmes() {
       const response = await fetch("/movies")
       const movies = await response.json()
+      domMovieList.innerHTML = ""
       movies.forEach(movie => {
-       domMovies.innerHTML += `
+        domMovieList.innerHTML += `  
           <li>
-            <strong>title</strong>
-            ${movie.title}
+            <div>
+              <strong>title:</strong> ${movie.title}
+            </div>
             <ul>
               <li>
-                <strong>source</strong>
-                ${movie.source}
+                <strong>source:</strong> ${movie.source}
               </li>
               <li>
-                <strong>thumb</strong>
-                ${movie.thumb}
+                <strong>thumb:</strong> ${movie.thumb}
               </li>
               <li>
-                <strong>description</strong>
-                ${movie.description}
+                <strong>description:</strong> ${movie.description}
+              </li>
+              <li>
+                <button>excluir</button>
+                <button>alterar</button>
               </li>
             </ul>
           </li>
@@ -65,6 +103,34 @@
     }
 
     listarTodosOsFilmes()
+
+    // ---✀------------------------------------------------------------------
+
+    domFormAlterar.addEventListener("submit", async ev => {
+      ev.preventDefault()
+      ev.stopPropagation()
+      ev.stopImmediatePropagation()
+
+      const body = JSON.stringify({
+        title: domFormAlterar.title.value,
+        source: domFormAlterar.source.value,
+        description: domFormAlterar.description.value,
+        thumb: domFormAlterar.thumb.value,
+      })
+
+      const response = await fetch("/movies", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body
+      })
+      
+      const result = await response.json()
+      domFormAlterar.reset()
+
+      listarTodosOsFilmes()
+    })
+
   </script>
 </body>
+
 </html>
