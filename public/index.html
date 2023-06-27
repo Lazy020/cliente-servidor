@@ -68,8 +68,9 @@
 
   <script>
     const domMovieList = document.querySelector("ul.movie-list")
-    const domFormAlterar = document.querySelector("form.form-alterar")
-
+    const domFormAlterar = document.querySelector("form.form-alterar") 
+    const deleteButtons = document.querySelectorAll(".delete-button")
+   
     // ---✀------------------------------------------------------------------
 
     async function listarTodosOsFilmes() {
@@ -93,7 +94,7 @@
                 <strong>description:</strong> ${movie.description}
               </li>
               <li>
-                <button>excluir</button>
+                <button class="delete-button">excluir</button>
                 <button>alterar</button>
               </li>
             </ul>
@@ -101,7 +102,9 @@
         `
       });
     }
-
+  
+  
+   
     listarTodosOsFilmes()
 
     // ---✀------------------------------------------------------------------
@@ -129,7 +132,8 @@
 
       listarTodosOsFilmes()
     })
-
+    
+     
   </script>
 </body>
 
