@@ -1,3 +1,4 @@
+const crypto = require ("crypto")
 const express = require("express")
 const fs = require("fs")
 const { getDatabaseInstance } = require("./database")
@@ -5,7 +6,32 @@ const { getDatabaseInstance } = require("./database")
 const app = express()
 
 app.use(express.static(__dirname + '/../public'))
-app.use(express.json())
+app.use(express.json()) 
+
+const loginTokens = []
+
+// VERIFICAR LOGIN
+function login(req, res, next) {
+  const { token } = req.query
+  if (loginTokens.includes(token)) {
+    next()
+    return
+  }
+  res.status(400).json({ error: true, msg: "Token de acesso inválido!" })
+}
+
+// LOGIN
+app.get("/login", (req, res) => {
+  const { login, senha } = req.query
+  if (login == "daniel" && senha == "123123") {
+    const hash = crypto.randomBytes(20).toString('hex')
+    loginTokens.push(hash)
+    console.log(hash)
+    res.json({ error: false, token: hash })
+    return
+  }
+  res.status(400).json({ error: true, msg: "Usuário e senha inválidos" })
+})
 
 app.post("/movies", async (req, res) => {
   const { title, source, description, thumb } = req.body

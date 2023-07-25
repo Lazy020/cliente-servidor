@@ -1,3 +1,7 @@
+const loginModal = document.querySelector("dialog")
+const loginForm = loginModal.querySelector("form")
+const loginFormButtonSend = loginModal.querySelector(".bt-send")
+const loginMsg = loginModal.querySelector(".msg")
 const domMovieList = document.querySelector("ul.movie-list")
 const domFormAlterar = document.querySelector("form.form-alterar") 
 //const deleteButtons = domMovieList.querySelectorAll(".delete-button")
@@ -5,6 +9,26 @@ const sendButton = domFormAlterar.querySelector("button")
 
 // ---✀------------------------------------------------------------------
 
+if (!localStorage.getItem("token")) {
+  loginModal.showModal()
+} else {
+  listarTodosOsFilmes()
+}
+
+loginFormButtonSend.addEventListener("click", async ev => {
+  const { login, senha } = loginForm
+  const response = await fetch(`/login?login=${login.value}&senha=${senha.value}`)
+  const data = await response.json()
+  if (data.token) {
+    localStorage.setItem("token", data.token)
+    loginModal.close()
+    listarTodosOsFilmes()
+    return
+  }
+  loginMsg.innerHTML = `<strong>Usuário e/ou senha inválidos</strong>`
+})
+
+// ---✀------------------------------------------------------------------
 async function listarTodosOsFilmes() {
   const response = await fetch("/movies")
   const movies = await response.json()
@@ -35,10 +59,7 @@ async function listarTodosOsFilmes() {
   });
 }
 
-
-
 listarTodosOsFilmes()
-
 // ---✀------------------------------------------------------------------
 
 domFormAlterar.addEventListener("submit", async ev => {
